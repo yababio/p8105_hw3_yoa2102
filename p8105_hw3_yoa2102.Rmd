@@ -23,7 +23,8 @@ scale_fill_discrete = scale_fill_viridis_d
 
 
 ###Problem 1 
-How many aisles, and which are most items from?
+
+####How many aisles, and which are most items from?
 
 ```{r}
 instacart %>% 
@@ -32,7 +33,7 @@ instacart %>%
 ```
 
 
-Let's make a plot
+####Creating a plot
 
 ```{r}
 instacart %>% 
@@ -48,7 +49,7 @@ instacart %>%
 ```
 
 
-Let's make a table!!
+####Creating a table
 
 ```{r}
 instacart %>% 
@@ -62,7 +63,7 @@ instacart %>%
 ```
 
 
-Apples vs ice cream.
+####Apples vs ice cream
 
 ```{r}
 instacart %>% 
@@ -75,4 +76,26 @@ instacart %>%
 	)
 ```
 
+
+###Problem 2 
+
+```{r}
+accel_df = read_csv("./data/accel_data.csv") %>%
+  janitor::clean_names() %>%
+  pivot_longer(
+    activity_1:activity_1440,
+    names_to = "minute",
+    names_prefix = "activity_",
+    values_to = "activity_count"
+    ) %>%
+  mutate(
+    minute = as.numeric(minute),
+    day = as.factor(day),
+    day = fct_relevel(day, "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
+    weekend = as.numeric(day %in% c("Saturday", "Sunday")),
+    weekend = recode(weekend, '1' = "weekend", '0' = "weekday")
+  
+    
+  )
+```
 

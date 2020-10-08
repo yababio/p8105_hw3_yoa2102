@@ -127,6 +127,10 @@ accel_df %>%
   ggplot(aes(x = minute, y = activity_count, color = day)) + 
   #geom_line(aes(group = day))
   geom_smooth(aes(group = day), se = FALSE)
+  labs(
+    title = "24 hr Activity Time Courses"
+    
+  )
  
 
 print(activity_plot)
@@ -134,3 +138,30 @@ print(activity_plot)
 
 
 #### Description of plot
+
+
+
+###Problem 3
+
+```{r setup_2, include = FALSE}
+data("ny_noaa")
+```
+
+##### Data exploration and description
+
+##### Data cleaning
+
+```{r}
+ny_noaa_clean = 
+ ny_noaa %>%
+ separate(date, into = c("year", "month", "day")) %>%
+ mutate(
+   prcp = prcp/10,
+   year = as.numeric(year),
+   month = as.numeric(month),
+   day = as.numeric(day),
+   tmax = as.numeric(tmax)/10,
+   tmin = as.numeric(tmin)/10
+ )
+```
+?ny_noaa

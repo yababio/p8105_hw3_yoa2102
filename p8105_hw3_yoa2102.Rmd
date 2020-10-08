@@ -5,6 +5,8 @@ output: github_document
 
 ```{r setup, include= FALSE}
 library(tidyverse)
+library(hexbin)
+library(ggridges)
 library(p8105.datasets)
 
 knitr::opts_chunk$set(
@@ -193,5 +195,41 @@ ggplot(aes(x = year, y = mean_tmax, group = id, color = id)) +
   theme(plot.title = element_text(hjust = 0.5))
 
 
+```
+
+#### Two-panel plot
+```{r}
+tmaxmin =
+  ny_noaa_clean %>%
+  drop_na(tmax, tmin) %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  labs(
+    title = "Temperature (max vs. min) Hexplot",
+    x = "Minimum Daily Temperature (C)",
+    y = "Maximum Daily Temperature (C)") +
+  geom_hex() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(legend.text = element_text(hjust = 1)) +
+  theme(legend.position = "right") +
+  theme(legend.box = "horizontal")
+  
+
+snow_dist = 
+  ny_noaa_clean %>%
+  drop_na(snow) %>%
+  filter(snow > 0 & snow < 100) %>%
+  ggplot(aes(x = year, y = snow)) +
+  labs(
+    title = "Distribution of Snowfall Values Boxplot",
+    x = "Year",
+    y = "Snowfall (mm)") +
+  geom_boxplot(aes(group = year)) +
+  theme(plot.title = element_text(hjust = 0.5))
+  
+      
+  
+ par(mfrow = c(1,2))
+ tmaxmin
+ snow_dist
 ```
 

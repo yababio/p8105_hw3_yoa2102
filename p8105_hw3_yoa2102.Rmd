@@ -79,6 +79,7 @@ instacart %>%
 
 ###Problem 2 
 
+#### Load, tidy, and describe the accelerometer data set. 
 ```{r}
 accel_df = read_csv("./data/accel_data.csv") %>%
   janitor::clean_names() %>%
@@ -93,9 +94,26 @@ accel_df = read_csv("./data/accel_data.csv") %>%
     day = as.factor(day),
     day = fct_relevel(day, "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
     weekend = as.numeric(day %in% c("Saturday", "Sunday")),
-    weekend = recode(weekend, '1' = "weekend", '0' = "weekday")
+    day_type = factor(recode(weekend, '1' = "weekend", '0' = "weekday"))) %>%
+  select(-weekend)
+    
   
     
+  
+```
+#### data description
+
+
+#### Creating total activity per day variable and associated table.
+```{r}
+test =
+accel_df %>%
+  group_by(day, week) %>%
+  summarize(total_activity = sum(activity_count)) %>%
+  pivot_wider(
+    names_from = day,
+    values_from = total_activity)
   )
 ```
+
 

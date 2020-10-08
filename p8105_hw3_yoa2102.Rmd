@@ -113,7 +113,10 @@ accel_df %>%
   pivot_wider(
     names_from = day,
     values_from = total_activity)
-  )
+ 
+test %>%
+  knitr::kable()
+
 ```
 
 

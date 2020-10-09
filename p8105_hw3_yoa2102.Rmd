@@ -144,18 +144,21 @@ activity_per_day %>%
   knitr::kable()
 
 ```
+## Description of table trends
 
 
 #### Creating a single-panel plot that shows the 24-hour activity time courses for each day.
-```{r}
+```{r accel_plot}
 
 accel_df %>%
   ggplot(aes(x = minute, y = activity_count, group = day_id, color = day)) + 
-  geom_line(aes(group = day), alpha = 0.2)
-  geom_smooth(aes(group = day), se = FALSE)
+  geom_line(aes(group = day), alpha = 0.2) +
+  geom_smooth(aes(group = day), se = FALSE) +
   labs(
     title = "24 hr Activity Time Courses"
-    )
+    ) + 
+  theme(plot.title = element_text(hjust = 0.5))
+  
  
   
 
@@ -163,7 +166,7 @@ accel_df %>%
 ```
 
 
-#### Description of plot
+## Description of plot trends
 
 
 
@@ -173,7 +176,10 @@ accel_df %>%
 data("ny_noaa")
 ```
 
-##### Data exploration and description
+#### Exploring and describing the NY NOAA dataset.
+
+The `ny_noaa` dataset consists of `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns. 
+
 
 ##### Data cleaning
 ```{r}

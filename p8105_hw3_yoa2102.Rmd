@@ -7,6 +7,7 @@ output: github_document
 library(tidyverse)
 library(hexbin)
 library(ggridges)
+library(patchwork)
 library(p8105.datasets)
 
 knitr::opts_chunk$set(
@@ -127,7 +128,7 @@ test %>%
 activity_plot =
 accel_df %>%
   ggplot(aes(x = minute, y = activity_count, color = day)) + 
-  #geom_line(aes(group = day))
+  geom_line(aes(group = day))
   geom_smooth(aes(group = day), se = FALSE)
   labs(
     title = "24 hr Activity Time Courses"
@@ -135,7 +136,7 @@ accel_df %>%
   )
  
 
-print(activity_plot)
+
 ```
 
 
@@ -186,7 +187,7 @@ mutate(month = month.name[month]) %>%
 group_by(id, year, month) %>%
 summarize(mean_tmax = mean(tmax, na.rm = TRUE)) %>%
 ggplot(aes(x = year, y = mean_tmax, group = id, color = id)) +
-  geom_point() +
+  geom_line() +
   geom_path() +
   facet_grid(~ month) +
   labs(title = "Average Temp for January and July", x = "Year", y = "Average Maximum Temp (C)") +
@@ -220,16 +221,15 @@ snow_dist =
   filter(snow > 0 & snow < 100) %>%
   ggplot(aes(x = year, y = snow)) +
   labs(
-    title = "Distribution of Snowfall Values Boxplot",
+    title = "Snowfall Values Boxplot",
     x = "Year",
     y = "Snowfall (mm)") +
   geom_boxplot(aes(group = year)) +
   theme(plot.title = element_text(hjust = 0.5))
   
-      
+     
+tmaxmin + snow_dist
   
- par(mfrow = c(1,2))
- tmaxmin
- snow_dist
+
 ```
 

@@ -3,7 +3,7 @@ title: "Homework 3"
 output: github_document
 ---
 
-```{r setup, include= FALSE}
+```{r setup}
 library(tidyverse)
 library(hexbin)
 library(ggridges)
@@ -125,16 +125,16 @@ test %>%
 
 #### Creating a single-panel plot that shows the 24-hour activity time courses for each day.
 ```{r}
-activity_plot =
+
 accel_df %>%
   ggplot(aes(x = minute, y = activity_count, color = day)) + 
-  geom_line(aes(group = day))
+  geom_line(aes(group = day), alpha = 0.5)
   geom_smooth(aes(group = day), se = FALSE)
   labs(
     title = "24 hr Activity Time Courses"
-    
-  )
+    )
  
+  
 
 
 ```
@@ -172,7 +172,10 @@ ny_noaa_clean =
 common_snow = 
 ny_noaa_clean %>%
   group_by(snow) %>%
-  summarize(n_obs = n()) 
+  summarize(n_obs = n())
+
+
+ 
 
 
 ```
@@ -186,7 +189,7 @@ filter(month %in% c("1", "7")) %>%
 mutate(month = month.name[month]) %>%
 group_by(id, year, month) %>%
 summarize(mean_tmax = mean(tmax, na.rm = TRUE)) %>%
-ggplot(aes(x = year, y = mean_tmax, group = id, color = id)) +
+ggplot(aes(x = year, y = mean_tmax, group = id)) +
   geom_line() +
   geom_path() +
   facet_grid(~ month) +

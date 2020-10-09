@@ -29,7 +29,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ### Problem 1 
 
 #### Describing the Instacart dataset
-The `instacart` dataset contains information about users, types of products, and purchase dates/times of items available on the online grocery service Instacart. This data set is comprised of  `r nrow(instacart)` rows and `r ncol(instacart)` columns.here are `r nrow (distinct(instacart, user_id))` distinct users, and each row in the dataset represents a product from a order.
+The `instacart` dataset contains information about users, types of products, and purchase dates/times of items available on the online grocery service Instacart. This data set is comprised of  `r nrow(instacart)` rows and `r ncol(instacart)` columns. There are `r nrow (distinct(instacart, user_id))` distinct users, and each row in the dataset represents a product from a order.
 
 
 
@@ -41,7 +41,7 @@ instacart %>%
 	arrange(desc(n))
 
 ```
-There are `r ncol(aisles)` and the top 3 aisles with the most items ordered from them are:
+There are `r nrow(aisles)` aisles and the top 3 aisles with the most items ordered from them are:
 
 *fresh vegetables - 150,609
 
@@ -128,10 +128,10 @@ accel_df = read_csv("./data/accel_data.csv") %>%
     
   
 ```
-The Accelerometer dataset contains five weeks of accelerometer data collected from a 63 year old male CUMC patient with congestive heart failure. This dataset is comprised of `r nrow(accel_df)` observations and `r ncol(accel_df)` variables. Variables include: `r names(accel_df)`.The tidy dataset specifies whether a day is a weekday or weekend via the day_id variable, and has collapsed the activity count into a more easily understandable format. The mean activity count for this dataset is `r round(mean(pull(accel_df,activity_count)),2)` with a standard deviation of `r round(sd(pull(accel_df, activity_count)),2)`.
+The Accelerometer dataset contains 5 weeks of accelerometer data collected from a 63 year old male CUMC patient with congestive heart failure. This dataset is comprised of `r nrow(accel_df)` observations and `r ncol(accel_df)` variables. Variables include: `r names(accel_df)`. The activity count in this dataset ranges from `r summarize(accel_df, min(activity_count))` to `r summarize(accel_df, max(activity_count))`. The tidy dataset specifies whether a day is a weekday or weekend via the day_type variable, and has collapsed the activity count into a more easily understandable format.
 
 
-#### Creating total activity per day variable and associated table.
+#### Creating total activity per day variable and associated table. Describing trends within the table.
 ```{r activity_per_day}
 activity_per_day =
 accel_df %>%
@@ -145,7 +145,8 @@ activity_per_day %>%
   knitr::kable()
 
 ```
-## Description of table trends
+
+The highest amount of activity appears on Monday during week 3, and the lowest amount of activity appears to occur on Saturday during weeks 4 and 5. Upon further assessment of the low activity counts for Saturday week 4 & 5, it appears that activity count was recorded as '1' for every minute during each of those days (total of 1440 minutes per day). This may be a potential device measurement error.
 
 
 #### Creating a single-panel plot that shows the 24-hour activity time courses for each day.
@@ -167,7 +168,7 @@ accel_df %>%
 ```
 
 
-## Description of plot trends
+The plot suggests that activity on Fridays tends to be highest at the end of the day, whereas activity on Sundays tends to be highest in the middle of the day. Activity on Saturdays is relatively consistent throughout the day, and dips towards the end of the day. Because of the nature of the conflating lines of this plot, it is difficult to discern more information and further analysis or differing visual representation may be needed. 
 
 
 
@@ -179,8 +180,23 @@ data("ny_noaa")
 
 #### Exploring and describing the NY NOAA dataset.
 
-The `ny_noaa` dataset consists of `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns. 
+The `ny_noaa` dataset describes weather information collected from New York state weather stations from January 1st, 1981 to December 31st, 2010. It consists of `r nrow(ny_noaa)` rows , `r ncol(ny_noaa)` columns, and the following variables: `r names(ny_noaa)`. These variables describe the unique weather station ID, date of observation, precipitation, snowfall, snow depth, maximum temperature, and minimum temperature. 
 
+Information regarding missing values in the dataset is as follows: 
+
+* total `NA`s in df: `r sum(is.na(ny_noaa))`
+
+* `prcp`:`r sum(is.na(pull(ny_noaa, prcp)))` `NA`s
+
+* `snow`: `r sum(is.na(pull(ny_noaa, snow)))` `NA`s
+
+* `snwd`: `r sum(is.na(pull(ny_noaa, snwd)))` `NA`s
+
+* `tmax`: `r sum(is.na(pull(ny_noaa, tmax)))` `NA`s
+
+* `tmin`: `r sum(is.na(pull(ny_noaa, tmin)))` `NA`s
+
+There appear to be a significant number of missing values in the above mentioned variables. These may need to dropped from the dataset during the data visualization process.
 
 ##### Cleaning the NOAA dataset by separating the date variable and ensuring reasonable measurement units.
 ```{r}
@@ -196,6 +212,7 @@ ny_noaa_clean =
    tmin = as.numeric(tmin)/10
  )
 ```
+Note that precipitation (`prcp`) has been converted from tenths of mm to mm to allow for uniformity (in comparison to snowfall and snow depth, which are also measured in mm). Additionally, temperature (`tmin` and `tmax`) have been converted from tenths of degrees Celsius to degrees Celsius to make the data more readily interpretable.
 
 #### Determining the most comonly observed snowfall value. 
 ```{r}
@@ -207,7 +224,7 @@ ny_noaa_clean %>%
 
 
 ```
-The most commonly observed snowfall value (i.e. observation with the largest rank number) is 0 degrees Celscius. This makes sense, because for most of the calendar year it is not snowing at all. 
+The most commonly observed snowfall value (i.e. observation with the largest rank number) is 0 mm. This makes sense, because for most of the calendar year it is not snowing at all. 
 
 #### Creating a two-panel plot for average max temperature in January and July.
 ```{r}
@@ -229,7 +246,7 @@ ggplot(aes(x = year, y = mean_tmax, group = id)) +
 
 ```
 
-There is a clear, interpretable structure. As expected, the average maximum temperature for January is much lower than that of July between the years 1980 and 2010. The average maximum temperature for January ranges from approximately -10 °C to 10 °C, whereas the average maximum temperature from approximately 20°C to 30°C. There are appears to be an outliers present in the data. The outliers for January tend to be above average temperatures, whereas the outliers for July tend to be below average temperatures.
+There is a clear, interpretable structure. As expected, the average maximum temperature for January is much lower than that of July between the years 1980 and 2010. The average maximum temperature for January ranges from approximately -10 °C to 10 °C, whereas the average maximum temperature from approximately 20°C to 30°C. There appear to be outliers present in the data. The outliers for January tend to be above average temperatures, whereas the outliers for July tend to be below average temperatures.
 
 #### Creating a two-panel plot showing (i) tmax vs. tmin and the (ii) distribution of snowfall values.
 ```{r}

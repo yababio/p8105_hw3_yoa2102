@@ -27,18 +27,33 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ### Problem 1 
 
-#### How many aisles, and which are most items from?
+#### Describing the Instacart dataset
+The Instacart dataset contains information about users, types of products, and purchase dates/times of items available on the online grocery service Instacart. This data set is comprised of  `r nrow(instacart)` rows and `r ncol(instacart)` columns.here are `r nrow (distinct(instacart, user_id))` distinct users, and each row in the dataset represents a product from a order.
 
-```{r}
+
+
+#### How many aisles, and which are most items ordered from?
+```{r aisles}
+aisles = 
 instacart %>% 
 	count(aisle) %>% 
 	arrange(desc(n))
+
 ```
+There are `r ncol(aisles)` and the top 3 aisles with the most items ordered from them are:
+
+*fresh vegetables - 150,609
+
+*fresh fruits - 150,473
+
+*packaged vegetables fruits - 78,493
 
 
-#### Creating a plot
 
-```{r}
+
+#### Creating a plot with number of items (n> 10,000) ordered in each aisle. 
+
+```{r instacart_plot}
 instacart %>% 
 	count(aisle) %>% 
 	filter(n > 10000) %>% 
@@ -52,9 +67,10 @@ instacart %>%
 ```
 
 
-#### Creating a table
 
-```{r}
+
+#### Creating a table showing the 3 most popular items in the "baking ingredients", "dog food care", and "packaged vegetables fruits" aisles. 
+```{r popular_table}
 instacart %>% 
 	filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>% 
 	group_by(aisle) %>% 
@@ -66,9 +82,11 @@ instacart %>%
 ```
 
 
-#### Apples vs ice cream
 
-```{r}
+
+#### Creating a table showing the  mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week.
+
+```{r apple_coffe_hour}
 instacart %>% 
 	filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>% 
 	group_by(product_name, order_dow) %>% 
@@ -76,14 +94,19 @@ instacart %>%
 	pivot_wider(
 		names_from = order_dow,
 		values_from = mean_hour
-	)
+	) %>%
+  knitr::kable()
 ```
+
+
+
+
 
 
 ### Problem 2 
 
 #### Load, tidy, and describe the accelerometer data set. 
-```{r}
+```{r tidy_accel}
 accel_df = read_csv("./data/accel_data.csv") %>%
   janitor::clean_names() %>%
   pivot_longer(
@@ -104,12 +127,12 @@ accel_df = read_csv("./data/accel_data.csv") %>%
     
   
 ```
-#### data description
+The Accelerometer dataset contains five weeks of accelerometer data collected from a 63 year old male CUMC patient with congestive heart failure. This dataset is comprised of `r nrow(accel_df)` observations and `r ncol(accel_df)` variables. Variables include: `r names(accel_df)`.The tidy dataset specifies whether a day is a weekday or weekend via the day_id variable, and has collapsed the activity count into a more easily understandable format. The mean activity count for this dataset is `r round(mean(pull(accel_df,activity_count)),2)` with a standard deviation of `r round(sd(pull(accel_df, activity_count)),2)`.
 
 
 #### Creating total activity per day variable and associated table.
-```{r}
-test =
+```{r activity_per_day}
+activity_per_day =
 accel_df %>%
   group_by(day, week) %>%
   summarize(total_activity = sum(activity_count)) %>%
@@ -117,7 +140,7 @@ accel_df %>%
     names_from = day,
     values_from = total_activity)
  
-test %>%
+activity_per_day %>%
   knitr::kable()
 
 ```
@@ -127,8 +150,8 @@ test %>%
 ```{r}
 
 accel_df %>%
-  ggplot(aes(x = minute, y = activity_count, color = day)) + 
-  geom_line(aes(group = day), alpha = 0.5)
+  ggplot(aes(x = minute, y = activity_count, group = day_id, color = day)) + 
+  geom_line(aes(group = day), alpha = 0.2)
   geom_smooth(aes(group = day), se = FALSE)
   labs(
     title = "24 hr Activity Time Courses"

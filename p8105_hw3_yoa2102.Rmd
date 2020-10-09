@@ -1,5 +1,6 @@
 ---
 title: "Homework 3"
+author: "Yaa Ababio"
 output: github_document
 ---
 
@@ -28,7 +29,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ### Problem 1 
 
 #### Describing the Instacart dataset
-The Instacart dataset contains information about users, types of products, and purchase dates/times of items available on the online grocery service Instacart. This data set is comprised of  `r nrow(instacart)` rows and `r ncol(instacart)` columns.here are `r nrow (distinct(instacart, user_id))` distinct users, and each row in the dataset represents a product from a order.
+The `instacart` dataset contains information about users, types of products, and purchase dates/times of items available on the online grocery service Instacart. This data set is comprised of  `r nrow(instacart)` rows and `r ncol(instacart)` columns.here are `r nrow (distinct(instacart, user_id))` distinct users, and each row in the dataset represents a product from a order.
 
 
 
@@ -181,7 +182,7 @@ data("ny_noaa")
 The `ny_noaa` dataset consists of `r nrow(ny_noaa)` rows and `r ncol(ny_noaa)` columns. 
 
 
-##### Data cleaning
+##### Cleaning the NOAA dataset by separating the date variable and ensuring reasonable measurement units.
 ```{r}
 ny_noaa_clean = 
  ny_noaa %>%
@@ -196,21 +197,19 @@ ny_noaa_clean =
  )
 ```
 
-#### Most commmonly observed snowfall value
+#### Determining the most comonly observed snowfall value. 
 ```{r}
-common_snow = 
+
 ny_noaa_clean %>%
-  group_by(snow) %>%
-  summarize(n_obs = n())
-
-
- 
+ count(snow, name = "n_obs") %>%
+ mutate(rank = min_rank(n_obs)) %>%
+ arrange(desc(rank))
 
 
 ```
+The most commonly observed snowfall value (i.e. observation with the largest rank number) is 0 degrees Celscius. This makes sense, because for most of the calendar year it is not snowing at all. 
 
-
-#### Max temp in January and July
+#### Creating a two-panel plot for average max temperature in January and July.
 ```{r}
  
 ny_noaa_clean %>%
@@ -222,7 +221,7 @@ ggplot(aes(x = year, y = mean_tmax, group = id)) +
   geom_line() +
   geom_path() +
   facet_grid(~ month) +
-  labs(title = "Average Temp for January and July", x = "Year", y = "Average Maximum Temp (C)") +
+  labs(title = "Average Temp for January and July", x = "Year", y = "Average Maximum Temp (°C)") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) + 
   theme(legend.position = "none") +
   theme(plot.title = element_text(hjust = 0.5))
@@ -230,7 +229,9 @@ ggplot(aes(x = year, y = mean_tmax, group = id)) +
 
 ```
 
-#### Two-panel plot
+There is a clear, interpretable structure. As expected, the average maximum temperature for January is much lower than that of July between the years 1980 and 2010. The average maximum temperature for January ranges from approximately -10 °C to 10 °C, whereas the average maximum temperature from approximately 20°C to 30°C. There are appears to be an outliers present in the data. The outliers for January tend to be above average temperatures, whereas the outliers for July tend to be below average temperatures.
+
+#### Creating a two-panel plot showing (i) tmax vs. tmin and the (ii) distribution of snowfall values.
 ```{r}
 tmaxmin =
   ny_noaa_clean %>%

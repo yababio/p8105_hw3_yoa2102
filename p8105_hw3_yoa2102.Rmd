@@ -198,14 +198,14 @@ Information regarding missing values in the dataset is as follows:
 
 There appear to be a significant number of missing values in the above mentioned variables. These may need to dropped from the dataset during the data visualization process.
 
-##### Cleaning the NOAA dataset by separating the date variable and ensuring reasonable measurement units.
+#### Cleaning the NOAA dataset by separating the date variable and ensuring reasonable measurement units.
 ```{r}
 ny_noaa_clean = 
  ny_noaa %>%
  separate(date, into = c("year", "month", "day"), convert = TRUE) %>%
  mutate(
    prcp = prcp/10,
-   year = as.numeric(year),
+   year = as.factor(year),
    month = as.numeric(month),
    day = as.numeric(day),
    tmax = as.numeric(tmax)/10,
@@ -275,11 +275,13 @@ snow_dist =
     x = "Year",
     y = "Snowfall (mm)") +
   geom_boxplot(aes(group = year)) +
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
   
      
 tmaxmin + snow_dist
-  
+
+
 
 ```
 
